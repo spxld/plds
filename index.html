@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #007BFF, #00C4B4);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+        }
+        .form-section, .output-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .form-section h2, .output-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, select:focus, input[type="file"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 12px 24px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #generateButton {
+            display: none;
+            background-color: #00C4B4;
+        }
+        #generateButton:hover {
+            background-color: #009a8c;
+        }
+        .output-section {
+            text-align: center;
+        }
+        #idCardCanvas {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        #downloadLink {
+            display: none;
+            padding: 12px 24px;
+            background-color: #00C4B4;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        #downloadLink:hover {
+            background-color: #009a8c;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 10px;
+        }
+        .confirmation {
+            display: none;
+            color: #007BFF;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .error {
+            color: #e91e63;
+        }
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #777;
+        }
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            .form-section, .output-section {
+                padding: 20px;
+            }
+            .button-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>PLDS Group Card</h1>
+            <p>Hi newcomer! Please input your desired data.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="form-section">
+            <h2>Enter Your Details</h2>
+            <form id="idCardForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="job">Desired Job</label>
+                    <select id="job" name="job" required>
+                        <option value="" disabled>Select a job</option>
+                        <!-- Entry-Level -->
+                        <optgroup label="Entry-Level">
+                            <option value="Junior Software Developer">Junior Software Developer</option>
+                            <option value="Graphic Design Assistant">Graphic Design Assistant</option>
+                            <option value="Marketing Coordinator">Marketing Coordinator</option>
+                            <option value="Administrative Assistant">Administrative Assistant</option>
+                            <option value="Data Entry Specialist">Data Entry Specialist</option>
+                            <option value="Customer Service Representative">Customer Service Representative</option>
+                            <option value="Sales Associate">Sales Associate</option>
+                            <option value="Content Writer">Content Writer</option>
+                            <option value="IT Support Technician">IT Support Technician</option>
+                            <option value="Research Assistant">Research Assistant</option>
+                        </optgroup>
+                        <!-- Mid-Level -->
+                        <optgroup label="Mid-Level">
+                            <option value="Software Engineer">Software Engineer</option>
+                            <option value="Graphic Designer">Graphic Designer</option>
+                            <option value="Marketing Specialist">Marketing Specialist</option>
+                            <option value="Office Administrator">Office Administrator</option>
+                            <option value="Data Analyst">Data Analyst</option>
+                            <option value="Account Manager">Account Manager</option>
+                            <option value="Sales Representative">Sales Representative</option>
+                            <option value="Content Strategist">Content Strategist</option>
+                            <option value="Systems Administrator">Systems Administrator</option>
+                            <option value="Project Coordinator">Project Coordinator</option>
+                        </optgroup>
+                        <!-- Senior-Level -->
+                        <optgroup label="Senior-Level">
+                            <option value="Senior Software Engineer">Senior Software Engineer</option>
+                            <option value="Senior Graphic Designer">Senior Graphic Designer</option>
+                            <option value="Marketing Manager">Marketing Manager</option>
+                            <option value="Operations Supervisor">Operations Supervisor</option>
+                            <option value="Senior Data Analyst">Senior Data Analyst</option>
+                            <option value="Senior Account Manager">Senior Account Manager</option>
+                            <option value="Regional Sales Manager">Regional Sales Manager</option>
+                            <option value="Senior Content Manager">Senior Content Manager</option>
+                            <option value="Network Engineer">Network Engineer</option>
+                            <option value="Senior Project Manager">Senior Project Manager</option>
+                        </optgroup>
+                        <!-- Managerial -->
+                        <optgroup label="Managerial">
+                            <option value="Software Development Manager">Software Development Manager</option>
+                            <option value="Creative Director">Creative Director</option>
+                            <option value="Marketing Director">Marketing Director</option>
+                            <option value="Operations Manager">Operations Manager</option>
+                            <option value="Data Science Manager">Data Science Manager</option>
+                            <option value="Sales Director">Sales Director</option>
+                            <option value="Customer Success Manager">Customer Success Manager</option>
+                            <option value="Content Marketing Manager">Content Marketing Manager</option>
+                            <option value="IT Manager">IT Manager</option>
+                            <option value="Project Manager">Project Manager</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="photo">Upload Photo</label>
+                    <input type="file" id="photo" accept="image/*" required>
+                </div>
+                <div class="button-group">
+                    <button type="submit" id="submitButton">Submit</button>
+                    <button type="button" id="generateButton">Generate</button>
+                </div>
+                <p id="confirmation" class="confirmation"></p>
+            </form>
+        </section>
+
+        <section class="output-section">
+            <h2>Your ID Card</h2>
+            <canvas id="idCardCanvas" width="638" height="1013"></canvas>
+            <a id="downloadLink">Download ID Card</a>
+            <p class="note"><strong>Note:</strong> Thank you!</p>
+        </section>
+    </div>
+
+    <footer>
+        <p>Created with ❤️ by bulz</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('idCardForm');
+        const canvas = document.getElementById('idCardCanvas');
+        const ctx = canvas.getContext('2d');
+        const downloadLink = document.getElementById('downloadLink');
+        const confirmation = document.getElementById('confirmation');
+        const nameInput = document.getElementById('name');
+        const jobSelect = document.getElementById('job');
+        const submitButton = document.getElementById('submitButton');
+        const generateButton = document.getElementById('generateButton');
+
+        // Load saved data from localStorage
+        window.addEventListener('load', () => {
+            const savedName = localStorage.getItem('idCardName');
+            const savedJob = localStorage.getItem('idCardJob');
+            if (savedName) {
+                nameInput.value = savedName;
+            }
+            if (savedJob) {
+                jobSelect.value = savedJob;
+            }
+        });
+
+        // Handle form submission (Formspree)
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = nameInput.value;
+            const job = jobSelect.value;
+
+            // Save to localStorage
+            localStorage.setItem('idCardName', name);
+            localStorage.setItem('idCardJob', job);
+
+            // Show submission status
+            confirmation.textContent = 'Submitting...';
+            confirmation.style.display = 'block';
+
+            // Submit to Formspree
+            console.log('Submitting to Formspree:', { name, job });
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('job', job);
+
+            fetch('https://formspree.io/f/mvgazpkb', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('Formspree response:', response.status, response.statusText);
+                if (response.ok) {
+                    confirmation.textContent = 'Click Generate to create ID card.';
+                    console.log('Success');
+                    generateButton.style.display = 'inline-block'; // Show Generate button
+                } else if (response.status === 429) {
+                    confirmation.textContent = 'Error: please inform bulz.';
+                    confirmation.classList.add('error');
+                    console.error('Rate limit exceeded');
+                    generateButton.style.display = 'inline-block'; // Still allow generation
+                } else if (response.status === 401) {
+                    confirmation.textContent = 'Error: Email Not Verified. Check Your Email. Click Generate to create ID card.';
+                    confirmation.classList.add('error');
+                    console.error('Email not verified');
+                    generateButton.style.display = 'inline-block';
+                } else if (response.status === 404) {
+                    confirmation.textContent = 'Error: Invalid Endpoint. Click Generate to create ID card.';
+                    confirmation.classList.add('error');
+                    console.error('Invalid endpoint');
+                    generateButton.style.display = 'inline-block';
+                } else {
+                    confirmation.textContent = `Error: Failed (Status ${response.status}). Click Generate to create ID card.`;
+                    confirmation.classList.add('error');
+                    console.error('Error:', response.status);
+                    generateButton.style.display = 'inline-block';
+                }
+                setTimeout(() => {
+                    confirmation.style.display = 'none';
+                    confirmation.classList.remove('error');
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Network error:', error.message);
+                confirmation.textContent = 'Error: Network Issue. Click Generate to create ID card.';
+                confirmation.classList.add('error');
+                generateButton.style.display = 'inline-block';
+                setTimeout(() => {
+                    confirmation.style.display = 'none';
+                    confirmation.classList.remove('error');
+                }, 5000);
+            });
+        });
+
+        // Handle Generate button click
+        generateButton.addEventListener('click', () => {
+            const name = nameInput.value;
+            const job = jobSelect.value;
+            const photo = document.getElementById('photo').files[0];
+
+            confirmation.textContent = 'Generating ID Card...';
+            confirmation.style.display = 'block';
+
+            // Generate ID card
+            const templateImg = new Image();
+            templateImg.src = 'idgem.png';
+            templateImg.onload = function () {
+                console.log('Template loaded:', templateImg.src);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+
+                // Draw name
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 48px "Playfair Display"';
+                ctx.fillText(name, 40, 730);
+
+                // Draw job
+                ctx.font = '20px "Source Sans Pro"';
+                ctx.fillText(job, 40, 760);
+
+                // Handle photo
+                if (photo) {
+                    console.log('Photo selected:', photo.name);
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        console.log('FileReader loaded:', e.target.result.length, 'bytes');
+                        const img = new Image();
+                        img.onload = function () {
+                            console.log('Photo loaded:', img.width, 'x', img.height);
+
+                            // Fit photo within 255x383
+                            const maxWidth = 255;
+                            const maxHeight = 383;
+                            let width = img.width;
+                            let height = img.height;
+                            const aspectRatio = width / height;
+                            if (width > maxWidth) {
+                                width = maxWidth;
+                                height = width / aspectRatio;
+                            }
+                            if (height > maxHeight) {
+                                height = maxHeight;
+                                width = height * aspectRatio;
+                            }
+
+                            // Center photo
+                            const x = 40 + (maxWidth - width) / 2;
+                            const y = 284 + (maxHeight - height) / 2;
+                            console.log('Rendering photo at x:', x, 'y:', y, 'width:', width, 'height:', height);
+
+                            ctx.drawImage(img, x, y, width, height);
+
+                            // Update download link
+                            downloadLink.href = canvas.toDataURL('image/png');
+                            downloadLink.download = `${name}_IDCard.png`;
+                            downloadLink.style.display = 'inline-block';
+
+                            confirmation.textContent = 'ID Card Generated!';
+                            setTimeout(() => {
+                                confirmation.style.display = 'none';
+                            }, 3000);
+                        };
+                        img.onerror = function () {
+                            console.error('Failed to load photo');
+                            confirmation.textContent = 'Error: Could not load photo. ID Card Generated without photo.';
+                            confirmation.classList.add('error');
+                            setTimeout(() => {
+                                confirmation.style.display = 'none';
+                                confirmation.classList.remove('error');
+                            }, 5000);
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = function () {
+                        console.error('FileReader failed');
+                        confirmation.textContent = 'Error: Could not read photo. ID Card Generated without photo.';
+                        confirmation.classList.add('error');
+                        setTimeout(() => {
+                            confirmation.style.display = 'none';
+                            confirmation.classList.remove('error');
+                        }, 5000);
+                    };
+                    reader.readAsDataURL(photo);
+                } else {
+                    console.error('No photo selected');
+                    confirmation.textContent = 'Error: No photo selected. ID Card Generated without photo.';
+                    confirmation.classList.add('error');
+                    setTimeout(() => {
+                        confirmation.style.display = 'none';
+                        confirmation.classList.remove('error');
+                    }, 5000);
+                }
+            };
+            templateImg.onerror = function () {
+                console.error('Failed to load template:', templateImg.src);
+                confirmation.textContent = 'Error: Could not load idgem.png. Please check the file.';
+                confirmation.classList.add('error');
+                setTimeout(() => {
+                    confirmation.style.display = 'none';
+                    confirmation.classList.remove('error');
+                }, 5000);
+            };
+        });
+    </script>
+</body>
+</html>
